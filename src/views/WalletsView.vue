@@ -10,6 +10,7 @@ import formatPlural from '@/utils/formatPlural';
 
 import WalletCard from '@/components/WalletCard.vue';
 import PagePagination from '@/components/PagePagination.vue';
+import BaseInput from '@/components/base/BaseInput.vue';
 import BaseSelect from '@/components/base/BaseSelect.vue';
 import IconArrowRight from '@/components/icons/IconArrowRight.vue';
 import IconSortDirection from '@/components/icons/IconSortDirection.vue';
@@ -21,6 +22,8 @@ const walletsTotal = ref(0);
 
 const page = useRouteQuery('page', 1, { transform: Number });
 const pageSize = useLocalStorage('wallets-list-size', 10);
+
+const search = useRouteQuery('search', '');
 
 const orderBy = useRouteQuery('orderBy', WalletsOrderOption.CreatedAt);
 const orderByDesc = useRouteQuery('orderByDesc', 1, { transform: { get: Boolean, set: Number } });
@@ -62,6 +65,7 @@ const onFetchWallets = async () => {
             {
                 orderBy: orderBy.value,
                 orderByDesc: orderByDesc.value,
+                search: search.value,
             }
         );
 
@@ -73,7 +77,11 @@ const onFetchWallets = async () => {
 };
 const debouncedFetchWallets = debounce(onFetchWallets, 0);
 
-watch([page, pageSize, orderBy, orderByDesc], debouncedFetchWallets);
+watch([page, orderBy, orderByDesc], debouncedFetchWallets);
+watch([pageSize, search], () => {
+    page.value = 1;
+    debouncedFetchWallets();
+});
 
 onFetchWallets();
 </script>
@@ -85,6 +93,10 @@ onFetchWallets();
 
     <main class="p-6">
         <div class="flex items-center justify-between gap-3 mb-4">
+            <div>
+                <BaseInput v-model="search" placeholder="Search wallets..." />
+            </div>
+
             <div class="ml-auto flex items-center gap-2">
                 <div class="flex flex-col">
                     <label for="order-by" class="text-sm text-gray-600">Sort by</label>

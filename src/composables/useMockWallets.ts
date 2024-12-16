@@ -23,14 +23,20 @@ const useMockWallets = () => {
         options: {
             orderBy?: WalletsOrderOption;
             orderByDesc?: boolean;
+            search?: string;
         } = {}
     ): Promise<{ data: Wallet[]; total: number }> => {
         const {
             orderBy = WalletsOrderOption.CreatedAt,
-            orderByDesc = true
+            orderByDesc = true,
+            search = '',
         } = options;
 
-        const sortedWallets = wallets.sort((a, b) => {
+        const filteredWallets = search
+            ? wallets.filter(wallet => wallet.name.toLowerCase().includes(search.toLowerCase()))
+            : wallets
+
+        const sortedWallets = filteredWallets.sort((a, b) => {
             const compareFn = FIELD_COMPARE_MAP[orderBy];
             return compareFn(a, b) * (orderByDesc ? -1 : 1);
         });
