@@ -3,7 +3,9 @@ import { computed } from 'vue';
 
 import WalletAssetsTable from '@/components/WalletAssetsTable.vue';
 import WalletNetworksList from '@/components/WalletNetworksList.vue';
+import CopyTooltip from '@/components/CopyTooltip.vue';
 import BaseBadge from '@/components/base/BaseBadge.vue';
+import BaseTooltip from '@/components/base/BaseTooltip.vue';
 
 import formatMoney from '@/utils/formatMoney';
 import formatDate from '@/utils/formatDate';
@@ -29,7 +31,6 @@ const emit = defineEmits<{
 
 const displayWalletName = computed(() => props.wallet.name)
 const displayWalletAddress = computed(() => `${props.wallet.identifier.slice(0, 6)}...${props.wallet.identifier.slice(-6)}`)
-const displayWalletAmount = computed(() => `${formatMoney(props.wallet.totalUsdValue)} USD`)
 const displayWalletCreatedAt = computed(() => formatDate(props.wallet.createdAt))
 
 const walletAssets = computed<WalletAsset[]>(() => props.wallet.assets)
@@ -49,12 +50,16 @@ const onToggleExpand = () => {
                     <button class="w-max text-lg font-medium" @click.stop="onToggleExpand">
                         {{ displayWalletName }}
                     </button>
-                    <button class="w-max text-base text-gray-600 hover:text-gray-800" @click.stop="copyToClipboard(props.wallet.identifier)">
-                        # {{ displayWalletAddress }}
-                    </button>
+                    <CopyTooltip :content="props.wallet.identifier" @copy="copyToClipboard(props.wallet.identifier)">
+                        <button class="w-max text-base text-gray-600 hover:text-gray-800" @click.stop="copyToClipboard(props.wallet.identifier)">
+                            # {{ displayWalletAddress }}
+                        </button>
+                    </CopyTooltip>
                 </div>
 
-                <p class="ml-auto text-lg font-medium">{{ displayWalletAmount }}</p>
+                <BaseTooltip :content="`${formatMoney(props.wallet.totalUsdValue, 10)} USD`" class="ml-auto">
+                    <p class="text-lg font-medium">{{ `${formatMoney(props.wallet.totalUsdValue)} USD` }}</p>
+                </BaseTooltip>
             </div>
 
             <div class="flex items-center gap-3 border-t border-blue-100 pt-4">

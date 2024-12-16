@@ -41,10 +41,9 @@ const visibleNetworks = computed(() =>
 <style>
 .wallet-networks {
     @apply flex items-center;
-    @apply pl-2;
 }
 
-.wallet-networks__item {
+.wallet-networks__item:not(:first-child) {
     @apply -ml-2;
 }
 

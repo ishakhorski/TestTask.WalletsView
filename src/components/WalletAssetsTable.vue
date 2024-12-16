@@ -5,6 +5,7 @@ import formatPlural from '@/utils/formatPlural';
 import formatMoney from '@/utils/formatMoney';
 
 import BaseBadge from '@/components/base/BaseBadge.vue';
+import BaseTooltip from '@/components/base/BaseTooltip.vue';
 import IconNetworkType from '@/components/icons/IconNetworkType.vue';
 import IconUSD from '@/components/icons/IconUSD.vue';
 
@@ -31,20 +32,31 @@ const assetsTotalUsdValue = computed(() => props.assets.reduce((acc, asset) => a
         <tbody>
             <tr v-for="asset in props.assets" :key="asset.id">
                 <td class="content-center">
-                    <IconNetworkType :type="asset.asset.network" :size="16" class="inline mr-1" />
-                    {{ asset.name }}
+                    <div class="flex items-center gap-1">
+                        <IconNetworkType :type="asset.asset.network" :size="16" class="inline mr-1 mt-0.5" />
+                        {{ asset.name }}
+                    </div>
                 </td>
-                <td class="content-center text-base font-medium">
-                    <IconNetworkType :type="asset.asset.network" :size="16" class="inline mr-1" />
-                    {{ NETWORK_CONFIG[asset.asset.network]?.name || asset.asset.network }}
+
+                <td class="content-center">
+                    <div class="flex items-center gap-1 text-base font-medium">
+                        <IconNetworkType :type="asset.asset.network" :size="16" class="inline mr-1 mt-0.5" />
+                        {{ NETWORK_CONFIG[asset.asset.network]?.name || asset.asset.network }}
+                    </div>
                 </td>
+
                 <td>
                     <div class="flex flex-col gap-2">
-                        {{ `${formatMoney(asset.assetAmount)} ${asset.asset.symbol}` }}
-                        <span class="w-max flex items-center text-gray-600">
-                            <IconUSD :size="16" aria-hidden="true" class="mr-1" />
-                            {{ `${formatMoney(asset.assetUsdValue.value)} USD` }}
-                        </span>
+                        <BaseTooltip :content="`${formatMoney(asset.assetAmount, 10)} ${asset.asset.symbol}`">
+                            {{ `${formatMoney(asset.assetAmount)} ${asset.asset.symbol}` }}
+                        </BaseTooltip>
+                        
+                        <BaseTooltip :content="`${formatMoney(asset.assetUsdValue.value, 10)} USD`">
+                            <span class="w-max flex items-center text-gray-600">
+                                <IconUSD :size="16" aria-hidden="true" class="mr-1 mt-0.5" />
+                                {{ `${formatMoney(asset.assetUsdValue.value)} USD` }}
+                            </span>
+                        </BaseTooltip>
                     </div>
                 </td>
             </tr>
@@ -58,18 +70,30 @@ const assetsTotalUsdValue = computed(() => props.assets.reduce((acc, asset) => a
                         <BaseBadge class="bg-blue-50"> Summary </BaseBadge>
                     </div>
                 </td>
+
                 <td>
-                    <IconNetworkType
-                        v-for="asset in props.assets"
-                        :key="asset.id"
-                        :type="asset.asset.network"
-                        :size="16"
-                        class="inline mr-1"
-                    />
+                    <div class="flex flex-wrap gap-0.5">
+                        <BaseTooltip
+                            v-for="asset in props.assets"
+                            :key="asset.id"
+                            :content="NETWORK_CONFIG[asset.asset.network]?.name || asset.asset.network"
+                        >
+                            <IconNetworkType
+                                :type="asset.asset.network"
+                                :size="16"
+                                class="inline mr-1"
+                            />
+                        </BaseTooltip>
+                    </div>
                 </td>
-                <td class="content-center leading-4">
-                    <IconUSD :size="16" aria-hidden="true" class="inline mr-1" />
-                    {{ `${formatMoney(assetsTotalUsdValue)} USD` }}
+
+                <td class="content-center">
+                    <BaseTooltip :content="`${formatMoney(assetsTotalUsdValue, 10)} USD`">
+                        <span class="flex items-center leading-4">
+                            <IconUSD :size="16" aria-hidden="true" class="inline mr-1 mt-0.5" />
+                            {{ `${formatMoney(assetsTotalUsdValue)} USD` }}
+                        </span>
+                    </BaseTooltip>
                 </td>
             </tr>
         </tbody>    
