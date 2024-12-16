@@ -4,7 +4,6 @@ import { computed } from 'vue';
 import WalletAssetsTable from '@/components/WalletAssetsTable.vue';
 import WalletNetworksList from '@/components/WalletNetworksList.vue';
 import BaseBadge from '@/components/base/BaseBadge.vue';
-import BaseTooltip from '@/components/base/BaseTooltip.vue';
 
 import formatMoney from '@/utils/formatMoney';
 import formatDate from '@/utils/formatDate';
@@ -50,16 +49,12 @@ const onToggleExpand = () => {
                     <button class="w-max text-lg font-medium" @click.stop="onToggleExpand">
                         {{ displayWalletName }}
                     </button>
-                    <BaseTooltip :content="wallet.identifier">
-                        <button class="w-max text-base text-gray-600 hover:text-gray-800" @click.stop="copyToClipboard(props.wallet.identifier)">
-                            # {{ displayWalletAddress }}
-                        </button>
-                    </BaseTooltip>
+                    <button class="w-max text-base text-gray-600 hover:text-gray-800" @click.stop="copyToClipboard(props.wallet.identifier)">
+                        # {{ displayWalletAddress }}
+                    </button>
                 </div>
 
-                <BaseTooltip :content="`${formatMoney(props.wallet.totalUsdValue, 6)} USD`">
-                    <p class="ml-auto text-lg font-medium">{{ displayWalletAmount }}</p>
-                </BaseTooltip>
+                <p class="ml-auto text-lg font-medium">{{ displayWalletAmount }}</p>
             </div>
 
             <div class="flex items-center gap-3 border-t border-blue-100 pt-4">
@@ -73,9 +68,11 @@ const onToggleExpand = () => {
             </div>
         </div>
 
-        <div v-if="props.expanded" class="wallet-card__content">
-            <WalletAssetsTable :assets="walletAssets" />
-        </div>
+        <Transition name="slide-y">
+            <div v-if="props.expanded" class="wallet-card__content">
+                <WalletAssetsTable :assets="walletAssets" />
+            </div>
+        </Transition>
     </div>
 </template>
 
@@ -97,5 +94,19 @@ const onToggleExpand = () => {
 
 .wallet-card__content {
     @apply min-w-[600px] overflow-x-auto;
+}
+
+.slide-y-enter-active,
+.slide-y-leave-active {
+  @apply overflow-y-hidden;
+  @apply transition-[max-height] duration-300 ease-in-out;
+}
+.slide-y-enter-from,
+.slide-y-leave-to {
+  @apply max-h-0;
+}
+.slide-y-enter-to,
+.slide-y-leave-from {
+  @apply max-h-[100rem]
 }
 </style>

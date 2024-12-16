@@ -5,7 +5,6 @@ import formatPlural from '@/utils/formatPlural';
 import formatMoney from '@/utils/formatMoney';
 
 import BaseBadge from '@/components/base/BaseBadge.vue';
-import BaseTooltip from '@/components/base/BaseTooltip.vue';
 import IconNetworkType from '@/components/icons/IconNetworkType.vue';
 import IconUSD from '@/components/icons/IconUSD.vue';
 
@@ -53,14 +52,20 @@ const assetsTotalUsdValue = computed(() => props.assets.reduce((acc, asset) => a
             <tr>
                 <td>
                     <div class="flex items-center gap-2 py-2">
-                        <span class="font-medium">{{ props.assets.length }} {{ formatPlural(props.assets.length, 'asset', 'assets') }}</span>
+                        <span class="font-medium">
+                            {{ props.assets.length }} {{ formatPlural(props.assets.length, 'asset', 'assets') }}
+                        </span>
                         <BaseBadge class="bg-blue-50"> Summary </BaseBadge>
                     </div>
                 </td>
                 <td>
-                    <BaseTooltip v-for="asset in props.assets" :key="asset.id" :content="NETWORK_CONFIG[asset.asset.network]?.name || asset.asset.network">
-                        <IconNetworkType  :type="asset.asset.network" :size="16" class="inline mr-1" />
-                    </BaseTooltip>
+                    <IconNetworkType
+                        v-for="asset in props.assets"
+                        :key="asset.id"
+                        :type="asset.asset.network"
+                        :size="16"
+                        class="inline mr-1"
+                    />
                 </td>
                 <td class="content-center leading-4">
                     <IconUSD :size="16" aria-hidden="true" class="inline mr-1" />
