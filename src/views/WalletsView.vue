@@ -21,7 +21,7 @@ const wallets = ref<Wallet[]>([]);
 const walletsTotal = ref(0);
 
 const page = useRouteQuery('page', 1, { transform: Number });
-const pageSize = useLocalStorage('wallets-list-size', 10);
+const pageSize = useLocalStorage('wallets-list-size', 10, { serializer: { read: Number, write: String } });
 
 const search = useRouteQuery('search', '');
 
