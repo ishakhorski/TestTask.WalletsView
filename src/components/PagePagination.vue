@@ -1,67 +1,7 @@
-<template>
-    <div class="page-pagination">
-        <span class="flex items-center gap-2 text-sm text-gray-800">
-            View
-            <select v-model="size">
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-            </select>
-            per page
-        </span>
-
-        <span class="text-sm text-gray-800 ml-auto">
-            Showing {{ total > size ? `${(size * page) - size + 1}-${size * page}` : total }} out of {{ total }} results
-        </span>
-
-        <div class="page-pagination__actions">
-            <button :disabled="isFirstPage" class="page-pagination__button mr-1" @click="onPrevPage">
-                <IconArrowRight :size="12" class="rotate-180" />
-            </button>
-
-            <!-- First Page -->
-            <button
-                :class="{ 'page-pagination__button--active': page === 1 }"
-                class="page-pagination__button page-pagination__button--number"
-                @click="onSetPage(1)"
-            >
-                1
-            </button>
-
-            <div v-for="pageNumber in visiblePageNumbers" :key="pageNumber">
-                <span v-if="typeof pageNumber === 'string'" >...</span>
-                <button
-                    v-else
-                    :key="pageNumber"
-                    :class="{ 'page-pagination__button--active': page === pageNumber }"
-                    class="page-pagination__button page-pagination__button--number"
-                    @click="onSetPage(pageNumber)"
-                >
-                    {{ pageNumber }}
-                </button>
-            </div>
-
-            <!-- Last Page -->
-            <button
-                :class="{ 'page-pagination__button--active': page === pagesNumber }"
-                class="page-pagination__button page-pagination__button--number"
-                @click="onSetPage(pagesNumber)"
-            >
-                {{ pagesNumber }}
-            </button>
-
-            <button :disabled="isLastPage" class="page-pagination__button ml-1" @click="onNextPage">
-                <IconArrowRight :size="12" />
-            </button>
-        </div>
-    </div>
-</template>
-
-
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import BaseSelect from '@/components/base/BaseSelect.vue';
 import IconArrowRight from '@/components/icons/IconArrowRight.vue';
 
 const props =  defineProps<{
@@ -72,6 +12,13 @@ const MAX_VISIBLE_PAGES = 6;
 
 const page = defineModel<number>('page', { required: true });
 const size = defineModel<number>('size', { required: true });
+
+const sizeOptions = [
+    { value: 5, label: '5' },
+    { value: 10, label: '10' },
+    { value: 20, label: '20' },
+    { value: 50, label: '50' },
+]
 
 const pagesNumber = computed(() => Math.ceil(props.total / size.value));
 
@@ -124,6 +71,64 @@ const onPrevPage = () => {
     onSetPage(page.value - 1);
 };
 </script>
+
+<template>
+    <div class="page-pagination">
+        <span class="flex items-center gap-2 text-sm text-gray-800">
+            View
+            <BaseSelect v-model="size" :options="sizeOptions" option-value="value" option-label="label" />
+            per page
+        </span>
+
+        <span class="text-sm text-gray-800 ml-auto">
+            Showing {{ total > size ? `${(size * page) - size + 1}-${size * page}` : total }} out of {{ total }} results
+        </span>
+
+        <div class="page-pagination__actions">
+            <button type="button" :disabled="isFirstPage" class="page-pagination__button mr-1" @click="onPrevPage">
+                <IconArrowRight :size="12" class="rotate-180" />
+            </button>
+
+            <!-- First Page -->
+            <button
+                type="button"
+                :class="{ 'page-pagination__button--active': page === 1 }"
+                class="page-pagination__button page-pagination__button--number"
+                @click="onSetPage(1)"
+            >
+                1
+            </button>
+
+            <div v-for="pageNumber in visiblePageNumbers" :key="pageNumber">
+                <span v-if="typeof pageNumber === 'string'" >...</span>
+                <button
+                    v-else
+                    :key="pageNumber"
+                    type="button"
+                    :class="{ 'page-pagination__button--active': page === pageNumber }"
+                    class="page-pagination__button page-pagination__button--number"
+                    @click="onSetPage(pageNumber)"
+                >
+                    {{ pageNumber }}
+                </button>
+            </div>
+
+            <!-- Last Page -->
+            <button
+                type="button"
+                :class="{ 'page-pagination__button--active': page === pagesNumber }"
+                class="page-pagination__button page-pagination__button--number"
+                @click="onSetPage(pagesNumber)"
+            >
+                {{ pagesNumber }}
+            </button>
+
+            <button type="button" :disabled="isLastPage" class="page-pagination__button ml-1" @click="onNextPage">
+                <IconArrowRight :size="12" />
+            </button>
+        </div>
+    </div>
+</template>
 
 <style>
 .page-pagination {

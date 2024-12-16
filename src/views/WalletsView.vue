@@ -3,14 +3,16 @@ import { ref, reactive, watch } from 'vue';
 import { useLocalStorage } from '@vueuse/core';
 import { useRouteQuery } from '@vueuse/router'
 
-import useMockWallets from '@/composables/useMockWallets';
+import useMockWallets, { WalletsOrderOption } from '@/composables/useMockWallets';
 
 import debounce from '@/utils/debounce';
 import formatPlural from '@/utils/formatPlural';
 
 import WalletCard from '@/components/WalletCard.vue';
 import PagePagination from '@/components/PagePagination.vue';
+import BaseSelect from '@/components/base/BaseSelect.vue';
 import IconArrowRight from '@/components/icons/IconArrowRight.vue';
+import IconSortDirection from '@/components/icons/IconSortDirection.vue';
 
 import type { Wallet } from '@/models/wallet';
 
@@ -19,6 +21,14 @@ const walletsTotal = ref(0);
 
 const page = useRouteQuery('page', 1, { transform: Number });
 const pageSize = useLocalStorage('wallets-list-size', 10);
+
+const orderBy = useRouteQuery('orderBy', WalletsOrderOption.CreatedAt);
+const orderByDesc = useRouteQuery('orderByDesc', 1, { transform: { get: Boolean, set: Number } });
+const orderByOptions: { value: WalletsOrderOption, label: string }[] = [
+    { value: WalletsOrderOption.CreatedAt, label: 'Created' },
+    { value: WalletsOrderOption.Name, label: 'Name' },
+    { value: WalletsOrderOption.Balance, label: 'Balance' },
+]
 
 const expandedWallets = reactive<{ [key: string]: boolean }>({});
 const isAllExpanded = ref(false);
@@ -46,7 +56,15 @@ const onToggleExpandAll = () => {
 const { getWallets } = useMockWallets();
 const onFetchWallets = async () => {
     try {
-        const { data, total } = await getWallets(pageSize.value, pageSize.value * (page.value - 1));
+        const { data, total } = await getWallets(
+            pageSize.value,
+            pageSize.value * (page.value - 1),
+            {
+                orderBy: orderBy.value,
+                orderByDesc: orderByDesc.value,
+            }
+        );
+
         wallets.value = data;
         walletsTotal.value = total;
     } catch (error) {
@@ -55,7 +73,7 @@ const onFetchWallets = async () => {
 };
 const debouncedFetchWallets = debounce(onFetchWallets, 0);
 
-watch([page, pageSize], debouncedFetchWallets);
+watch([page, pageSize, orderBy, orderByDesc], debouncedFetchWallets);
 
 onFetchWallets();
 </script>
@@ -66,6 +84,23 @@ onFetchWallets();
     </header>
 
     <main class="p-6">
+        <div class="flex items-center justify-between gap-3 mb-4">
+            <div class="ml-auto flex items-center gap-2">
+                <div class="flex flex-col">
+                    <label for="order-by" class="text-sm text-gray-600">Sort by</label>
+                    <BaseSelect v-model="orderBy" id="order-by" :options="orderByOptions" option-value="value" option-label="label" />
+                </div>
+
+                <button
+                    type="button"
+                    class="text-gray-600 transition-colors duration-75 mt-5 hover:text-gray-800"
+                    @click="orderByDesc = !orderByDesc"
+                >
+                    <IconSortDirection :size="24" :class="{ 'rotate-180': orderByDesc }" class="transition-transform duration-75" />
+                </button>
+            </div>
+        </div>
+
         <div class="flex items-center justify-between gap-3 mb-4">
             <button
                 type="button"

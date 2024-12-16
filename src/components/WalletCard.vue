@@ -47,11 +47,11 @@ const onToggleExpand = () => {
             <div class="flex items-center gap-3 pb-4">
                 <WalletNetworksList :networks="walletNetworks" />
                 <div class="flex flex-col">
-                    <button class="w-max text-lg font-medium" @click.stop="onToggleExpand">
+                    <button type="button" class="w-max text-lg font-medium" @click.stop="onToggleExpand">
                         {{ displayWalletName }}
                     </button>
                     <CopyTooltip :content="props.wallet.identifier" @copy="copyToClipboard(props.wallet.identifier)">
-                        <button class="w-max text-base text-gray-600 hover:text-gray-800" @click.stop="copyToClipboard(props.wallet.identifier)">
+                        <button type="button" class="w-max text-base text-gray-600 hover:text-gray-800" @click.stop="copyToClipboard(props.wallet.identifier)">
                             # {{ displayWalletAddress }}
                         </button>
                     </CopyTooltip>

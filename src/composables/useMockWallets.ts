@@ -2,13 +2,42 @@ import walletsData from '@/api/wallets.json';
 
 import type { Wallet } from '@/models/wallet';
 
+export enum WalletsOrderOption {
+    CreatedAt = 'createAt',
+    Name = 'name',
+    Balance = 'totalUsdValue',
+}
+
 const useMockWallets = () => {
     const wallets: Wallet[] = walletsData as Wallet[];
 
-    const getWallets = (take: number, skip: number): Promise<{ data: Wallet[]; total: number }> => {
+    const FIELD_COMPARE_MAP = {
+        [WalletsOrderOption.CreatedAt]: (a: Wallet, b: Wallet) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        [WalletsOrderOption.Name]: (a: Wallet, b: Wallet) => a.name.localeCompare(b.name),
+        [WalletsOrderOption.Balance]: (a: Wallet, b: Wallet) => a.totalUsdValue - b.totalUsdValue,
+    }
+
+    const getWallets = (
+        take: number,
+        skip: number,
+        options: {
+            orderBy?: WalletsOrderOption;
+            orderByDesc?: boolean;
+        } = {}
+    ): Promise<{ data: Wallet[]; total: number }> => {
+        const {
+            orderBy = WalletsOrderOption.CreatedAt,
+            orderByDesc = true
+        } = options;
+
+        const sortedWallets = wallets.sort((a, b) => {
+            const compareFn = FIELD_COMPARE_MAP[orderBy];
+            return compareFn(a, b) * (orderByDesc ? -1 : 1);
+        });
+
         return Promise.resolve({
-            data: wallets.slice(skip, skip + take),
-            total: wallets.length
+            data: sortedWallets.slice(skip, skip + take),
+            total: sortedWallets.length
         });
     }
 

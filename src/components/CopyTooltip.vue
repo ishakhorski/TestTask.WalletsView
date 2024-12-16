@@ -25,7 +25,7 @@ const onCopy = () => {
 
                 <span class="w-[1px] h-3 bg-white"></span>
 
-                <button class="rounded-full transition-colors duration-75 hover:brightness-90 active:brightness-75" @click.stop="onCopy">
+                <button type="button" class="rounded-full transition-colors duration-75 hover:brightness-90 active:brightness-75" @click.stop="onCopy">
                     <IconCopy :size="24" aria-hidden="true" />
                     <span class="sr-only">copy</span>
                 </button>
