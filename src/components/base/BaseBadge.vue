@@ -1,5 +1,14 @@
 <template>
-    <span class="inline-block rounded-md text-sm px-2 py-1">
-        <slot></slot>
-    </span>
+  <span class="base-badge">
+    <slot></slot>
+  </span>
 </template>
+
+<style>
+.base-badge {
+  @apply inline-block;
+  @apply text-xs;
+  @apply rounded-[4px];
+  @apply px-2 py-1;
+}
+</style>

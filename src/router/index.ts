@@ -5,8 +5,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'wallets-view',
-      component: () => import('../views/WalletsView.vue'),
+      name: 'accounts-view',
+      component: () => import('../views/AccountsView.vue'),
     },
   ],
 })

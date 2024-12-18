@@ -1,35 +1,37 @@
 <script setup lang="ts">
-import BaseTooltip from '@/components/base/BaseTooltip.vue';
-import IconCopy from '@/components/icons/IconCopy.vue';
+import BaseTooltip from '@/components/base/BaseTooltip.vue'
+import BaseButton from '@/components/base/BaseButton.vue'
+
+import IconCopy from '@/components/icons/IconCopy.vue'
 
 const props = defineProps<{
-    content?: string;
-}>();
+  content?: string
+}>()
 
 const emit = defineEmits<{
-    (event: 'copy'): void
-}>();
+  (event: 'copy'): void
+}>()
 
 const onCopy = () => {
-    emit('copy');
-};
+  emit('copy')
+}
 </script>
 
 <template>
-    <BaseTooltip>
-        <slot></slot>
+  <BaseTooltip>
+    <slot></slot>
 
-        <template #content>
-            <div class="flex items-center gap-2">
-                <p>{{ props.content }}</p>
+    <template #content>
+      <div class="flex items-center gap-2">
+        <p class="text-sm">{{ props.content }}</p>
 
-                <span class="w-[1px] h-3 bg-white"></span>
+        <span class="w-[1px] h-2 bg-neutral-800"></span>
 
-                <button type="button" class="rounded-full transition-colors duration-75 hover:brightness-90 active:brightness-75" @click.stop="onCopy">
-                    <IconCopy :size="24" aria-hidden="true" />
-                    <span class="sr-only">copy</span>
-                </button>
-            </div>
-        </template>
-    </BaseTooltip>
+        <BaseButton size="sm" class="!text-white !p-0 hover:bg-neutral-800 active:bg-neutral-900" @click.stop="onCopy">
+          <IconCopy :size="20" aria-hidden="true" />
+          <span class="sr-only">copy</span>
+        </BaseButton>
+      </div>
+    </template>
+  </BaseTooltip>
 </template>
