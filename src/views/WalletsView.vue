@@ -23,15 +23,19 @@ const walletsTotal = ref(0);
 const page = useRouteQuery('page', 1, { transform: Number });
 const pageSize = useLocalStorage('wallets-list-size', 10, { serializer: { read: Number, write: String } });
 
-const search = useRouteQuery('search', '');
+const search = ref<string>('');
 
-const orderBy = useRouteQuery('orderBy', WalletsOrderOption.CreatedAt);
-const orderByDesc = useRouteQuery('orderByDesc', 1, { transform: { get: Boolean, set: Number } });
+const orderBy = ref<WalletsOrderOption>(WalletsOrderOption.CreatedAt);
+const orderByDesc = ref<boolean>(true);
 const orderByOptions: { value: WalletsOrderOption, label: string }[] = [
     { value: WalletsOrderOption.CreatedAt, label: 'Created' },
     { value: WalletsOrderOption.Name, label: 'Name' },
     { value: WalletsOrderOption.Balance, label: 'Balance' },
 ]
+
+const onToggleSortDirection = () => {
+    orderByDesc.value = !orderByDesc.value;
+};
 
 const expandedWallets = reactive<{ [key: string]: boolean }>({});
 const isAllExpanded = ref(false);
@@ -98,15 +102,12 @@ onFetchWallets();
             </div>
 
             <div class="ml-auto flex items-center gap-2">
-                <div class="flex flex-col">
-                    <label for="order-by" class="text-sm text-gray-600">Sort by</label>
-                    <BaseSelect v-model="orderBy" id="order-by" :options="orderByOptions" option-value="value" option-label="label" />
-                </div>
+                <BaseSelect v-model="orderBy" id="order-by" :options="orderByOptions" option-value="value" option-label="label" />
 
                 <button
                     type="button"
-                    class="text-gray-600 transition-colors duration-75 mt-5 hover:text-gray-800"
-                    @click="orderByDesc = !orderByDesc"
+                    class="text-gray-600 transition-colors duration-75 hover:text-gray-800"
+                    @click="onToggleSortDirection"
                 >
                     <IconSortDirection :size="24" :class="{ 'rotate-180': orderByDesc }" class="transition-transform duration-75" />
                 </button>

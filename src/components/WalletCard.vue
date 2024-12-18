@@ -75,7 +75,7 @@ const onToggleExpand = () => {
 
         <Transition name="slide-y">
             <div v-if="props.expanded" class="wallet-card__content">
-                <WalletAssetsTable :assets="walletAssets" />
+                <WalletAssetsTable :assets="walletAssets" class="min-w-[800px]" />
             </div>
         </Transition>
     </div>
@@ -98,7 +98,7 @@ const onToggleExpand = () => {
 }
 
 .wallet-card__content {
-    @apply min-w-[600px] overflow-x-auto;
+    @apply  overflow-x-auto;
 }
 
 .slide-y-enter-active,

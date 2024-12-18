@@ -8,7 +8,7 @@ interface WalletAsset {
       network: NetworkType;
       symbol: string;
     },
-    assetUsdValue: { value: number };
+    assetUsdValue: { value: number } | null;
     assetAmount: number;
   }
 

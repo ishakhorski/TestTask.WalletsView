@@ -16,7 +16,7 @@ const props = defineProps<{
     assets: WalletAsset[]
 }>()
 
-const assetsTotalUsdValue = computed(() => props.assets.reduce((acc, asset) => acc + asset.assetUsdValue.value, 0))
+const assetsTotalUsdValue = computed(() => props.assets.reduce((acc, asset) => acc + (asset.assetUsdValue?.value || 0), 0))
 </script>
 
 <template>
@@ -34,7 +34,7 @@ const assetsTotalUsdValue = computed(() => props.assets.reduce((acc, asset) => a
                 <td class="content-center">
                     <div class="flex items-center gap-1">
                         <IconNetworkType :type="asset.asset.network" :size="16" class="inline mr-1 mt-0.5" />
-                        {{ asset.name }}
+                        <span class="break-all">{{ asset.name }}</span>
                     </div>
                 </td>
 
@@ -51,7 +51,7 @@ const assetsTotalUsdValue = computed(() => props.assets.reduce((acc, asset) => a
                             {{ `${formatMoney(asset.assetAmount)} ${asset.asset.symbol}` }}
                         </BaseTooltip>
                         
-                        <BaseTooltip :content="`${formatMoney(asset.assetUsdValue.value, 10)} USD`">
+                        <BaseTooltip v-if="asset.assetUsdValue" :content="`${formatMoney(asset.assetUsdValue.value, 10)} USD`">
                             <span class="w-max flex items-center text-gray-600">
                                 <IconUSD :size="16" aria-hidden="true" class="mr-1 mt-0.5" />
                                 {{ `${formatMoney(asset.assetUsdValue.value)} USD` }}

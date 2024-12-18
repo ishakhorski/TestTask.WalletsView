@@ -9,7 +9,7 @@ const selected = defineModel<unknown>({ required: true });
 
 const onSelect = (event: Event) => {
     const target = event.target as HTMLSelectElement;
-    selected.value = target.value;
+    selected.value = JSON.parse(target.value);
 }
 </script>
 
