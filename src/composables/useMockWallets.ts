@@ -33,14 +33,14 @@ const useMockWallets = () => {
       ? wallets.filter((wallet) => wallet.name.toLowerCase().includes(search.toLowerCase()))
       : wallets
 
-    const sortedWallets = filteredWallets.sort((a, b) => {
+    filteredWallets.sort((a, b) => {
       const compareFn = FIELD_COMPARE_MAP[orderBy]
       return compareFn(a, b) * (orderByDesc ? -1 : 1)
     })
 
     return Promise.resolve({
-      data: sortedWallets.slice(skip, skip + take),
-      total: sortedWallets.length,
+      data: filteredWallets.slice(skip, skip + take),
+      total: filteredWallets.length,
     })
   }
 
